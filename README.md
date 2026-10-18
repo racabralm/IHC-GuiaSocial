@@ -42,18 +42,52 @@ Presbiteriana Mackenzie, sob orientação do Prof. Luiz Carlos Machi Lozano.
 guia-social/
 │
 ├── backend/
-│   ├── programa_social.py       → Classe ProgramaSocial
-│   └── test_programa_social.py  → Testes automatizados da classe
+│   ├── __init__.py
+│   ├── main.py
+│   │
+│   ├── data/
+│   │   ├── __init__.py
+│   │   └── beneficios.py
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── programa_social.py
+│   │
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   └── beneficios.py
+│   │
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   └── beneficio.py
+│   │
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── beneficio_service.py
+│   │
+│   └── tests/
+│       ├── __init__.py
+│       ├── test_programa_social.py
+│       └── test_beneficios_api.py
 │
 ├── docs/                        → Documentação do projeto
 │
 ├── .github/
 │   └── workflows/               → Pipeline de CI/CD com GitHub Actions
 │
+├── Dockerfile
+├── requirements.txt
+├── .gitignore
 └── README.md
 ```
 
-- **`backend/`**: contém as classes e regras de negócio do sistema.
+- **`backend/main.py`**: ponto de entrada da aplicação FastAPI.
+- **`backend/data/`**: contém os dados utilizados atualmente pela API.
+- **`backend/models/`**: contém as classes de domínio da aplicação.
+- **`backend/routes/`**: contém as rotas e endpoints da API.
+- **`backend/schemas/`**: contém os modelos de resposta utilizados pelo FastAPI e Pydantic.
+- **`backend/services/`**: contém as regras de consulta e lógica da aplicação.
+- **`backend/tests/`**: contém os testes automatizados da aplicação.
 - **`docs/`**: contém a documentação, requisitos, wireframes, diagramas e demais artefatos.
 - **`.github/workflows/`**: contém os arquivos da esteira de integração contínua, responsável por executar os testes
   automaticamente.
@@ -77,15 +111,132 @@ guia-social/
 
 ---
 
-## Funcionalidades planejadas
+## API Backend
 
-- [ ] Visualizar o catálogo de programas e benefícios sociais.
-- [ ] Pesquisar programas por nome.
+O backend da aplicação está sendo desenvolvido com FastAPI.
+
+Atualmente, a API permite:
+
+- listar benefícios sociais;
+- consultar um benefício específico pelo ID;
+- pesquisar benefícios pelo nome;
+- realizar buscas ignorando diferenças entre letras maiúsculas, minúsculas e acentos;
+- retornar erro `404` quando um benefício não é encontrado;
+- acessar a documentação automática da API pelo Swagger.
+
+### Executando o projeto
+
+Na raiz do projeto, instale as dependências:
+
+```bash
+pip install -r requirements.txt
+```
+
+Depois, execute a aplicação:
+
+```bash
+uvicorn backend.main:app --reload
+```
+
+A API ficará disponível em:
+
+```text
+http://127.0.0.1:8000
+```
+
+### Documentação da API
+
+O FastAPI disponibiliza uma documentação interativa utilizando Swagger.
+
+Acesse:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+### Rotas disponíveis
+
+#### Listar todos os benefícios
+
+```http
+GET /beneficios/
+```
+
+Retorna todos os benefícios cadastrados atualmente na aplicação.
+
+#### Buscar benefícios por nome
+
+```http
+GET /beneficios/?nome=bolsa
+```
+
+A busca ignora diferenças entre letras maiúsculas, minúsculas e acentos.
+
+Exemplos:
+
+```text
+/beneficios/?nome=auxilio
+/beneficios/?nome=AUXILIO
+/beneficios/?nome=auxílio
+```
+
+#### Consultar benefício por ID
+
+```http
+GET /beneficios/{id}
+```
+
+Exemplo:
+
+```http
+GET /beneficios/1
+```
+
+Caso o benefício informado não exista, a API retorna o status HTTP `404`.
+
+---
+
+## Testes Automatizados
+
+Os testes automatizados utilizam Pytest.
+
+Para executar todos os testes:
+
+```bash
+pytest
+```
+
+Para visualizar mais detalhes durante a execução:
+
+```bash
+pytest -v
+```
+
+Atualmente, os testes verificam:
+
+- criação e comportamento da classe `ProgramaSocial`;
+- funcionamento da API;
+- listagem dos benefícios;
+- consulta de benefício por ID;
+- retorno de erro para benefício inexistente;
+- pesquisa por nome;
+- pesquisa sem acentos;
+- pesquisa utilizando letras maiúsculas;
+- pesquisa sem resultados.
+
+---
+
+## Funcionalidades
+
+- [x] Visualizar o catálogo de programas e benefícios sociais.
+- [x] Pesquisar programas por nome.
 - [ ] Filtrar programas por categoria.
-- [ ] Consultar detalhes, critérios e documentos necessários.
-- [ ] Acessar o canal oficial de cada programa.
+- [x] Consultar informações de um programa social.
+- [x] Acessar o canal oficial de cada programa.
 - [ ] Comparar programas sociais.
 - [ ] Salvar programas favoritos.
+- [ ] Integrar os dados com PostgreSQL.
+- [ ] Desenvolver a interface web em React.
 
 ---
 

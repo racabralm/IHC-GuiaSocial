@@ -1,5 +1,5 @@
 import pytest
-from programa_social import ProgramaSocial
+from backend.models.programa_social import ProgramaSocial
 
 class TestProgramaSocial:
     
