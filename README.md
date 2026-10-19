@@ -70,6 +70,22 @@ guia-social/
 │       ├── test_programa_social.py
 │       └── test_beneficios_api.py
 │
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   ├── .gitignore
+│   ├── .oxlintrc.json
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.js
+│
 ├── docs/                        → Documentação do projeto
 │
 ├── .github/
@@ -77,17 +93,21 @@ guia-social/
 │
 ├── Dockerfile
 ├── requirements.txt
+├── package-lock.json
 ├── .gitignore
 └── README.md
 ```
 
-- **`backend/main.py`**: ponto de entrada da aplicação FastAPI.
-- **`backend/data/`**: contém os dados utilizados atualmente pela API.
+- **`backend/main.py`**: ponto de entrada da aplicação FastAPI e configuração de CORS.
+- **`backend/data/`**: contém os dados dos benefícios utilizados atualmente pela API.
 - **`backend/models/`**: contém as classes de domínio da aplicação.
 - **`backend/routes/`**: contém as rotas e endpoints da API.
 - **`backend/schemas/`**: contém os modelos de resposta utilizados pelo FastAPI e Pydantic.
 - **`backend/services/`**: contém as regras de consulta e lógica da aplicação.
 - **`backend/tests/`**: contém os testes automatizados da aplicação.
+- **`frontend/`**: contém a interface web desenvolvida em React com Vite.
+- **`frontend/src/App.jsx`**: concentra a interface principal e consome os benefícios disponibilizados pela API.
+- **`frontend/src/App.css`**: contém os estilos da interface.
 - **`docs/`**: contém a documentação, requisitos, wireframes, diagramas e demais artefatos.
 - **`.github/workflows/`**: contém os arquivos da esteira de integração contínua, responsável por executar os testes
   automaticamente.
@@ -96,24 +116,25 @@ guia-social/
 
 ## Tecnologias e Requisitos Técnicos
 
-| Item               | Escolha                                   |
-|:-------------------|:------------------------------------------|
-| Linguagem          | Python                                    |
-| Frontend           | React, HTML, CSS e JavaScript             |
-| Backend            | FastAPI                                   |
-| Banco de dados     | PostgreSQL                                |
-| API                | API REST própria desenvolvida com FastAPI |
-| Cloud              | AWS (EC2 e RDS)                           |
-| Containerização    | Docker                                    |
-| CI/CD              | GitHub Actions                            |
-| Controle de versão | Git e GitHub                              |
-| Testes             | Pytest                                    |
+| Item                | Escolha                                   |
+|:--------------------|:------------------------------------------|
+| Linguagem           | Python e JavaScript                       |
+| Frontend            | React, HTML, CSS e JavaScript             |
+| Ferramenta frontend | Vite                                      |
+| Backend             | FastAPI                                   |
+| Banco de dados      | PostgreSQL                                |
+| API                 | API REST própria desenvolvida com FastAPI |
+| Cloud               | AWS (EC2 e RDS)                           |
+| Containerização     | Docker                                    |
+| CI/CD               | GitHub Actions                            |
+| Controle de versão  | Git e GitHub                              |
+| Testes              | Pytest                                    |
 
 ---
 
 ## API Backend
 
-O backend da aplicação está sendo desenvolvido com FastAPI.
+O backend da aplicação foi desenvolvido com FastAPI.
 
 Atualmente, a API permite:
 
@@ -122,9 +143,11 @@ Atualmente, a API permite:
 - pesquisar benefícios pelo nome;
 - realizar buscas ignorando diferenças entre letras maiúsculas, minúsculas e acentos;
 - retornar erro `404` quando um benefício não é encontrado;
+- disponibilizar os dados utilizados pelo frontend;
+- permitir comunicação com o frontend por meio de CORS;
 - acessar a documentação automática da API pelo Swagger.
 
-### Executando o projeto
+### Executando o backend
 
 Na raiz do projeto, instale as dependências:
 
@@ -175,9 +198,9 @@ A busca ignora diferenças entre letras maiúsculas, minúsculas e acentos.
 Exemplos:
 
 ```text
-/beneficios/?nome=auxilio
-/beneficios/?nome=AUXILIO
-/beneficios/?nome=auxílio
+/beneficios/?nome=inclusao
+/beneficios/?nome=INCLUSAO
+/beneficios/?nome=inclusão
 ```
 
 #### Consultar benefício por ID
@@ -196,9 +219,79 @@ Caso o benefício informado não exista, a API retorna o status HTTP `404`.
 
 ---
 
+## Frontend
+
+O frontend da aplicação foi desenvolvido com React e Vite.
+
+A interface consome os benefícios diretamente da API FastAPI, evitando manter uma segunda cópia dos dados no frontend.
+
+Atualmente, o frontend permite:
+
+- visualizar o catálogo de benefícios sociais;
+- pesquisar benefícios por nome, descrição, categoria e público-alvo;
+- realizar pesquisas ignorando diferenças entre letras maiúsculas, minúsculas e acentos;
+- filtrar benefícios por categoria;
+- visualizar os detalhes de cada benefício;
+- acessar o canal oficial do programa;
+- salvar benefícios como favoritos;
+- selecionar até três benefícios para comparação;
+- comparar informações como categoria, descrição, público-alvo, cadastro, requisitos e forma de solicitação.
+
+### Executando o frontend
+
+É necessário ter o Node.js e o npm instalados.
+
+Entre na pasta do frontend:
+
+```bash
+cd frontend
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Depois, execute:
+
+```bash
+npm run dev
+```
+
+O Vite informará o endereço local da aplicação, normalmente:
+
+```text
+http://localhost:5173
+```
+
+Para que os dados sejam carregados corretamente, o backend também deve estar em execução.
+
+### Integração entre frontend e backend
+
+O frontend realiza uma requisição para:
+
+```text
+GET http://127.0.0.1:8000/beneficios/
+```
+
+O fluxo principal da aplicação é:
+
+```text
+FastAPI
+   ↓
+GET /beneficios/
+   ↓
+React
+   ↓
+Catálogo / Pesquisa / Filtros / Favoritos / Comparador / Detalhes
+```
+
+---
+
 ## Testes Automatizados
 
-Os testes automatizados utilizam Pytest.
+Os testes automatizados do backend utilizam Pytest.
 
 Para executar todos os testes:
 
@@ -216,27 +309,33 @@ Atualmente, os testes verificam:
 
 - criação e comportamento da classe `ProgramaSocial`;
 - funcionamento da API;
-- listagem dos benefícios;
+- quantidade de benefícios disponíveis;
 - consulta de benefício por ID;
 - retorno de erro para benefício inexistente;
 - pesquisa por nome;
 - pesquisa sem acentos;
 - pesquisa utilizando letras maiúsculas;
-- pesquisa sem resultados.
+- pesquisa parcial;
+- pesquisa com múltiplos resultados;
+- pesquisa sem resultados;
+- presença dos campos obrigatórios dos benefícios;
+- campos adicionais de benefícios que possuem mais de um canal oficial.
 
 ---
 
 ## Funcionalidades
 
 - [x] Visualizar o catálogo de programas e benefícios sociais.
-- [x] Pesquisar programas por nome.
-- [ ] Filtrar programas por categoria.
-- [x] Consultar informações de um programa social.
+- [x] Pesquisar programas por nome, descrição, categoria e público-alvo.
+- [x] Filtrar programas por categoria.
+- [x] Consultar informações detalhadas de um programa social.
 - [x] Acessar o canal oficial de cada programa.
-- [ ] Comparar programas sociais.
-- [ ] Salvar programas favoritos.
+- [x] Comparar programas sociais.
+- [x] Salvar programas favoritos durante a sessão.
+- [x] Integrar frontend e backend por meio da API REST.
+- [ ] Persistir favoritos do usuário.
 - [ ] Integrar os dados com PostgreSQL.
-- [ ] Desenvolver a interface web em React.
+- [ ] Publicar a aplicação em ambiente de cloud.
 
 ---
 
