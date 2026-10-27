@@ -11,10 +11,8 @@ Presbiteriana Mackenzie, sob orientação do Prof. Luiz Carlos Machi Lozano.
 | Integrante                   | RA       |
 |:-----------------------------|:---------|
 | Bruna Amorim Maia            | 10431883 |
-| Bruna Soncini                | 10428267 |
 | Fabyani Tiva Yan             | 10431835 |
 | Rafael Araujo Cabral Moreira | 10441919 |
-| Rute Willemann               | 10436781 |
 
 **Turma:** `06N`
 

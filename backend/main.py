@@ -6,8 +6,10 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from backend.routes.beneficios import router as beneficios_router
 
@@ -37,9 +39,35 @@ app.add_middleware(
 
 app.include_router(beneficios_router)
 
+FRONTEND_DIST = ROOT_DIR / "frontend" / "dist"
+
+if (FRONTEND_DIST / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
+
 
 @app.get("/")
-def inicio():
+def inicio(request: Request):
+    accept = request.headers.get("accept", "")
+    if FRONTEND_DIST.exists() and "text/html" in accept and "application/json" not in accept:
+        return FileResponse(FRONTEND_DIST / "index.html")
+
     return {
         "mensagem": "API Guia Social funcionando"
     }
+
+
+@app.get("/{full_path:path}")
+def servir_frontend(full_path: str, request: Request):
+    arquivo = FRONTEND_DIST / full_path
+    if FRONTEND_DIST.exists() and full_path and arquivo.is_file():
+        return FileResponse(arquivo)
+
+    if FRONTEND_DIST.exists() and "text/html" in request.headers.get("accept", ""):
+        return FileResponse(FRONTEND_DIST / "index.html")
+
+    raise HTTPException(status_code=404, detail="Não encontrado")
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True)
