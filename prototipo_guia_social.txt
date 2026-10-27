@@ -20,11 +20,9 @@ Turma: 06N
 --------------------------------------------------------------------------------
 LINKS DE ACESSO AO PROTÓTIPO EXECUTÁVEL
 --------------------------------------------------------------------------------
-- Repositório GitHub (Protótipo Executável):
-  https://github.com/racabralm/IHC-GuiaSocial
 
-- Acesso Local (após iniciar com ./executar.sh ou executar.bat):
-  Aplicação Web / API: http://127.0.0.1:8000
+Acesso Local (após iniciar com ./executar.sh ou executar.bat):
+  - Aplicação Web / API: http://127.0.0.1:8000
 
 --------------------------------------------------------------------------------
 COMO EXECUTAR
@@ -32,4 +30,3 @@ COMO EXECUTAR
 1. No Windows: dê dois cliques ou execute no terminal o arquivo `executar.bat`.
 2. No Linux / macOS: execute no terminal `./executar.sh`.
 ================================================================================
-
