@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 function App() {
   const [pesquisa, setPesquisa] = useState("");
@@ -15,7 +15,10 @@ function App() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
 
-  useEffect(() => {
+  const carregarBeneficios = () => {
+    setCarregando(true);
+    setErro(null);
+
     fetch(`${API_URL}/beneficios/`)
       .then((response) => {
         if (!response.ok) {
@@ -32,6 +35,10 @@ function App() {
         setErro(error.message);
         setCarregando(false);
       });
+  };
+
+  useEffect(() => {
+    carregarBeneficios();
   }, []);
 
   const categorias = [
@@ -87,11 +94,57 @@ function App() {
   );
 
   if (carregando) {
-    return <p>Carregando benefícios...</p>;
+    return (
+      <div className="app">
+        <header className="topo">
+          <div className="topo-conteudo">
+            <div className="marca">
+              <span className="marca-icone">GS</span>
+              <span>Guia Social</span>
+            </div>
+          </div>
+        </header>
+        <main className="estado-container">
+          <div className="painel-status">
+            <div className="painel-status-icone">⏳</div>
+            <h2>Carregando benefícios...</h2>
+            <p>Conectando ao servidor da API em <code>{API_URL}</code></p>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   if (erro) {
-    return <p>Erro: {erro}</p>;
+    return (
+      <div className="app">
+        <header className="topo">
+          <div className="topo-conteudo">
+            <div className="marca">
+              <span className="marca-icone">GS</span>
+              <span>Guia Social</span>
+            </div>
+          </div>
+        </header>
+        <main className="estado-container">
+          <div className="painel-status">
+            <div className="painel-status-icone">⚠️</div>
+            <h2>Não foi possível carregar os dados</h2>
+            <p>
+              O frontend tentou consultar a API em <strong>{API_URL}</strong>, mas ela não respondeu.
+            </p>
+            <div className="dica-backend">
+              <strong>Como iniciar a API:</strong><br />
+              1. Abra um terminal na pasta raiz do projeto<br />
+              2. Execute: <code>uvicorn backend.main:app --reload</code>
+            </div>
+            <button className="botao-acao" onClick={carregarBeneficios}>
+              Tentar novamente
+            </button>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
@@ -309,12 +362,6 @@ function App() {
           </section>
         )}
       </main>
-
-      <footer className="rodape">
-        <span>Guia Social — Laboratório de Engenharia de Software</span>
-
-        <span>Projeto acadêmico • Confirme regras nos canais oficiais</span>
-      </footer>
 
       {detalhes && (
         <div className="modal-fundo" onClick={() => setDetalhes(null)}>
