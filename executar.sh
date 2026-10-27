@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Script de Execução do Projeto Guia Social (LabES)
+# Script de Execução do Projeto Guia Social
 # ==============================================================================
 
 cd "$(dirname "$0")"
