@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 function App() {
   const [pesquisa, setPesquisa] = useState("");
@@ -108,7 +108,7 @@ function App() {
           <div className="painel-status">
             <div className="painel-status-icone">⏳</div>
             <h2>Carregando benefícios...</h2>
-            <p>Conectando ao servidor da API em <code>{API_URL}</code></p>
+            <p>Conectando ao servidor da API em <code>{API_URL || "/beneficios/"}</code></p>
           </div>
         </main>
       </div>
@@ -131,7 +131,7 @@ function App() {
             <div className="painel-status-icone">⚠️</div>
             <h2>Não foi possível carregar os dados</h2>
             <p>
-              O frontend tentou consultar a API em <strong>{API_URL}</strong>, mas ela não respondeu.
+              O frontend tentou consultar a API em <strong>{API_URL || "/beneficios/"}</strong>, mas ela não respondeu.
             </p>
             <div className="dica-backend">
               <strong>Como iniciar a API:</strong><br />
